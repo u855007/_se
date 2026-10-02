@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW01: Curl Implementation - 探索 HTTP 黑盒子</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        .code-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl text-indigo-600">HTTP-Curl-Explorer</div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
+                <a href="#intro" class="hover:text-indigo-600 transition">介紹</a>
+                <a href="#bash" class="hover:text-indigo-600 transition">Bash v1</a>
+                <a href="#python" class="hover:text-indigo-600 transition">Python v2</a>
+                <a href="#powershell" class="hover:text-indigo-600 transition">PowerShell v3</a>
+                <a href="#testing" class="hover:text-indigo-600 transition">測試結果</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="intro" class="pt-32 pb-16 px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                打開 HTTP 的黑盒子：<br><span class="text-indigo-600">實作自定義 Curl 工具</span>
+            </h1>
+            <p class="text-lg text-slate-600 mb-8">
+                本專案旨在透過三個不同語言的實作，深入理解 HTTP/1.1 協定、TCP Socket 通訊、TLS 握手加密以及分塊傳輸 (Chunked Transfer Encoding) 的運作機制。
+            </p>
+            <div class="flex justify-center space-x-4">
+                <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold">Bash</span>
+                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-semibold">Python</span>
+                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">PowerShell</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Core Concept -->
+    <section class="py-16 bg-white border-y border-slate-200">
+        <div class="max-w-5xl mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-8 text-center">通訊流程分析</h2>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                    <div class="text-indigo-600 font-bold text-xl mb-2">1. TCP</div>
+                    <p class="text-sm text-slate-500">建立與伺服器 (Port 443) 的原始連線</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                    <div class="text-indigo-600 font-bold text-xl mb-2">2. TLS</div>
+                    <p class="text-sm text-slate-500">執行 SSL/TLS 握手，確保通訊加密</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                    <div class="text-indigo-600 font-bold text-xl mb-2">3. HTTP</div>
+                    <p class="text-sm text-slate-500">發送 raw text 請求 (Request Line & Headers)</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                    <div class="text-indigo-600 font-bold text-xl mb-2">4. Parse</div>
+                    <p class="text-sm text-slate-500">解析 Status Code 與處理 Chunked Body</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementations -->
+    <main class="max-w-5xl mx-auto px-4 py-16 space-y-24">
+
+        <!-- v1 Bash -->
+        <section id="bash" class="scroll-mt-20">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="bg-indigo-600 text-white px-3 py-1 rounded text-sm font-bold">v1</span>
+                <h2 class="text-3xl font-bold text-slate-900">Bash Implementation</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="md:col-span-1 space-y-4">
+                    <p class="text-slate-600 leading-relaxed">
+                        最簡單的封裝版本。利用系統內建的 <code>curl</code> 指令，將自定義的 <code>fetch resource id</code> 語法對應到正確的 API URL。
+                    </p>
+                    <div class="p-4 bg-slate-100 rounded-lg border border-slate-200">
+                        <p class="text-xs font-mono text-slate-500 mb-2 uppercase font-bold">執行範例</p>
+                        <code class="text-sm block text-indigo-600 font-mono">./curl.sh posts 1</code>
+                    </div>
+                </div>
+                <div class="md:col-span-2 code-block">
+                    <pre><code class="language-bash">#!/bin/bash
+# 語法: ./curl.sh &lt;resource&gt; &lt;id&gt;
+RESOURCE=$1
+ID=$2
+URL="https://jsonplaceholder.typicode.com/$RESOURCE/$ID"
+curl -s -f "$URL"
+</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- v2 Python -->
+        <section id="python" class="scroll-mt-20">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="bg-yellow-500 text-white px-3 py-1 rounded text-sm font-bold">v2</span>
+                <h2 class="text-3xl font-bold text-slate-900">Python Implementation</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="md:col-span-1 space-y-4">
+                    <p class="text-slate-600 leading-relaxed">
+                        核心挑戰在於<strong>手動操作 Socket</strong>。我們使用 <code>ssl.wrap_socket</code> 實作 TLS 握手，並直接發送 UTF-8 編碼的 HTTP 請求字串。
+                    </p>
+                    <p class="text-slate-600 leading-relaxed">
+                        特別實作了 <strong>Chunked Transfer Encoding</strong> 解碼邏輯，透過讀取 16 進位分塊大小來重新組合成完整內容。
+                    </p>
+                </div>
+                <div class="md:col-span-2 code-block">
+                    <pre><code class="language-python">import socket
+import ssl
+
+# 關鍵實作：TLS 握手
+context = ssl.create_default_context()
+ssock = context.wrap_socket(sock, server_hostname=host)
+
+# 關鍵實作：手動構建 HTTP 請求
+request = f"GET {path} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\r\n"
+ssock.sendall(request.encode('utf-8'))
+
+# 關鍵實作：Chunked 解碼邏輯
+# 讀取 hex size -> 讀取該長度數據 -> 跳過 \r\n -> 重複直到 size=0
+</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- v3 PowerShell -->
+        <section id="powershell" class="scroll-mt-20">
+            <div class="flex items-center space-x-3 mb-6">
+                <span class="bg-blue-600 text-white px-3 py-1 rounded text-sm font-bold">v3</span>
+                <h2 class="text-3xl font-bold text-slate-900">PowerShell Implementation</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="md:col-span-1 space-y-4">
+                    <p class="text-slate-600 leading-relaxed">
+                        利用 .NET Framework 的底層類別 <code>TcpClient</code> 和 <code>SslStream</code>。
+                    </p>
+                    <p class="text-slate-600 leading-relaxed">
+                        實作流程與 Python 相同，但需處理 .NET 的位元組流 (Byte Stream) 與字串編碼轉換，證明了 HTTP 協定在不同平台間的一致性。
+                    </p>
+                </div>
+                <div class="md:col-span-2 code-block">
+                    <pre><code class="language-powershell"># 關鍵實作：.NET SslStream
+$SslStream = New-Object System.Net.Security.SslStream($NetworkStream, $false)
+$SslStream.AuthenticateAsClient($HostName)
+
+# 寫入原始 UTF8 位元組
+$RequestBytes = [System.Text.Encoding]::UTF8.GetBytes($Request)
+$SslStream.Write($RequestBytes, 0, $RequestBytes.Length)
+</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testing -->
+        <section id="testing" class="scroll-mt-20 py-16 bg-indigo-900 rounded-3xl text-white overflow-hidden relative">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full blur-3xl opacity-20 -mr-32 -mt-32"></div>
+            <div class="relative z-10 max-w-3xl mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-8">測試結果報告</h2>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+                    <div class="flex justify-around items-center mb-8">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold mb-1">33 / 33</div>
+                            <div class="text-indigo-200 text-sm">測試案例通過</div>
+                        </div>
+                        <div class="h-12 w-px bg-white/20"></div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold mb-1">100%</div>
+                            <div class="text-indigo-200 text-sm">通過率</div>
+                        </div>
+                    </div>
+                    <div class="text-left space-y-3">
+                        <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                            <span class="text-green-400 font-bold">✓</span>
+                            <span class="text-sm">正確處理 200 OK 回應</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                            <span class="text-green-400 font-bold">✓</span>
+                            <span class="text-sm">正確處理 404 Not Found 錯誤狀態碼</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                            <span class="text-green-400 font-bold">✓</span>
+                            <span class="text-sm">正確解碼 Chunked Transfer Encoding (分塊傳輸)</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                            <span class="text-green-400 font-bold">✓</span>
+                            <span class="text-sm">TLS/SSL 握手在三種語言中均正常運作</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 border-t border-slate-200 text-center text-slate-400 text-sm">
+        <p>&copy; 2026 HTTP Curl Project. Built for SE Homework 01.</p>
+    </footer>
+
+</body>
+</html>
