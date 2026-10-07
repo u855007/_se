@@ -6,11 +6,28 @@ const app = {
     currentPage: 'dashboard',
 
     init() {
+        this.setupNavigation();
         this.render();
-        window.app = this; // Global for UI handlers
+        window.app = this;
+    },
+
+    setupNavigation() {
+        const navButtons = {
+            'nav-dashboard': 'dashboard',
+            'nav-holdings': 'holdings',
+            'nav-simulator': 'simulator'
+        };
+
+        Object.entries(navButtons).forEach(([id, page]) => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => this.navigate(page));
+            }
+        });
     },
 
     navigate(page) {
+        console.log('Navigating to:', page);
         this.currentPage = page;
 
         // Update Navigation UI state
@@ -26,8 +43,11 @@ const app = {
     },
 
     async render() {
+        console.log('Rendering page:', this.currentPage);
         const content = document.getElementById('content-area');
         const title = document.getElementById('page-title');
+
+        if (!content) return;
 
         switch(this.currentPage) {
             case 'dashboard':
@@ -50,60 +70,65 @@ const app = {
     },
 
     initCharts() {
-        // Allocation Chart
-        const ctxAlloc = document.getElementById('allocationChart');
-        if (ctxAlloc) {
-            const allocation = Store.getAllocation();
-            new Chart(ctxAlloc, {
-                type: 'doughnut',
-                data: {
-                    labels: allocation.map(a => a.category),
-                    datasets: [{
-                        data: allocation.map(a => a.value),
-                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    plugins: { legend: { position: 'bottom' } },
-                    cutout: '70%'
-                }
-            });
-        }
-
-        // Performance Chart
-        const ctxPerf = document.getElementById('performanceChart');
-        if (ctxPerf) {
-            new Chart(ctxPerf, {
-                type: 'line',
-                data: {
-                    labels: DB.history.map(h => h.date),
-                    datasets: [{
-                        label: 'Portfolio Value',
-                        data: DB.history.map(h => h.value),
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { grid: { color: '#f1f5f9' } }
+        try {
+            // Allocation Chart
+            const ctxAlloc = document.getElementById('allocationChart');
+            if (ctxAlloc) {
+                const allocation = Store.getAllocation();
+                new Chart(ctxAlloc, {
+                    type: 'doughnut',
+                    data: {
+                        labels: allocation.map(a => a.category),
+                        datasets: [{
+                            data: allocation.map(a => a.value),
+                            backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { position: 'bottom' } },
+                        cutout: '70%'
                     }
-                }
-            });
+                });
+            }
+
+            // Performance Chart
+            const ctxPerf = document.getElementById('performanceChart');
+            if (ctxPerf) {
+                new Chart(ctxPerf, {
+                    type: 'line',
+                    data: {
+                        labels: DB.history.map(h => h.date),
+                        datasets: [{
+                            label: 'Portfolio Value',
+                            data: DB.history.map(h => h.value),
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Chart initialization failed:', e);
         }
     },
 
     updateScenario(category, value) {
         Store.setScenario(category, value);
-        document.getElementById(`val-${category}`).innerText = `${(value * 100).toFixed(0)}%`;
+        const valEl = document.getElementById(`val-${category}`);
+        if (valEl) valEl.innerText = `${(value * 100).toFixed(0)}%`;
         this.updateSimDisplay();
     },
 
@@ -128,8 +153,7 @@ const app = {
 
     resetScenario() {
         Object.keys(Store.scenarioMultipliers).forEach(cat => Store.setScenario(cat, 1.0));
-        this.render(); // Re-render to reset UI sliders if necessary, or just manually reset values
-        // For simplicity, we'll re-render to be clean
+        this.render();
     }
 };
 
