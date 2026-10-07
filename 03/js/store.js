@@ -2,10 +2,7 @@ import DB from './data.js';
 
 export const Store = {
     scenarioMultipliers: {
-        Crypto: 1.0,
         Stock: 1.0,
-        Commodity: 1.0,
-        'Real Estate': 1.0,
         Cash: 1.0
     },
 

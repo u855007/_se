@@ -46,7 +46,7 @@ export const UI = {
                         <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
                             <div class="space-y-2">
                                 <h3 class="text-2xl font-bold">🚀 未來 10 年財富預測</h3>
-                                <p class="text-indigo-100 text-sm opacity-80">基於您目前的台股/加密貨幣持倉，參考過去 10 年年化報酬率 (CAGR) 進行複利計算</p>
+                                <p class="text-indigo-100 text-sm opacity-80">基於您目前的台股持倉，參考歷史 10 年平均年化報酬率 (CAGR) 進行複利計算</p>
                             </div>
                             <div class="text-right">
                                 <p class="text-indigo-200 text-sm mb-1">預計 2036 年總淨值</p>
@@ -81,7 +81,7 @@ export const UI = {
                     <div class="flex justify-between items-center mb-8">
                         <div>
                             <h2 class="text-2xl font-bold text-slate-800">持有資產清單</h2>
-                            <p class="text-sm text-slate-500">管理您的所有投資持有量與平均成本</p>
+                            <p class="text-sm text-slate-500">管理您的所有台股持倉與平均成本</p>
                         </div>
                         <button onclick="app.showModal()" class="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition text-sm font-bold shadow-lg shadow-indigo-200">
                             + 新增資產
@@ -136,8 +136,8 @@ export const UI = {
             return `
                 <div class="max-w-4xl mx-auto">
                     <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-2">市場場景模擬器 (What-If Engine)</h2>
-                        <p class="text-slate-500">調整下方的滑桿，模擬市場波動對您總資產的即時影響。</p>
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">台股市場模擬器 (What-If Engine)</h2>
+                        <p class="text-slate-500">調整下方的滑桿，模擬台股市場波動對您總資產的即時影響。</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-6 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
@@ -148,7 +148,7 @@ export const UI = {
                             ${Object.keys(Store.scenarioMultipliers).map(cat => `
                                 <div class="space-y-3">
                                     <div class="flex justify-between text-sm">
-                                        <span class="text-slate-600 font-medium">${cat === 'Real Estate' ? '房產' : cat === 'Crypto' ? '加密貨幣' : cat === 'Stock' ? '股票' : cat === 'Commodity' ? '商品' : '現金'}</span>
+                                        <span class="text-slate-600 font-medium">${cat === 'Stock' ? '台股/美股' : cat === 'Cash' ? '現金' : cat}</span>
                                         <span class="font-mono font-bold text-indigo-600" id="val-${cat}">${(Store.scenarioMultipliers[cat] * 100).toFixed(0)}%</span>
                                     </div>
                                     <input

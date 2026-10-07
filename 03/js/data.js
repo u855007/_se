@@ -5,17 +5,20 @@ export const DB = {
         '2454': 150,    // 聯發科
         '2303': 160,    // 統一
         '2881': 110,    // 國泰金
-        'BTC': 2100000, // 比特幣 (TWD)
+        '2382': 210,    // 宏碁
+        '2409': 140,    // 聯強
+        '2376': 180,    // 技嘉
         'TWD': 1.0,
     },
-    // 過去 10 年年化平均報酬率 (CAGR) - 台股模擬數據
     historicalReturns: {
-        '2330': 0.22,    // 台積電 ~22%
-        '2317': 0.08,    // 鴻海 ~8%
-        '2454': 0.15,    // 聯發科 ~15%
-        '2303': 0.06,    // 統一 ~6%
-        '2881': 0.07,    // 國泰金 ~7%
-        'BTC': 0.60,
+        '2330': 0.22,
+        '2317': 0.08,
+        '2454': 0.15,
+        '2303': 0.06,
+        '2881': 0.07,
+        '2382': 0.10,
+        '2409': 0.09,
+        '2376': 0.18,
         'S&P500': 0.12,
         'CASH': 0.02,
     },
@@ -25,17 +28,19 @@ export const DB = {
         { id: 'a3', symbol: '2454', name: '聯發科 (MediaTek)', category: 'Stock', riskLevel: 'High' },
         { id: 'a4', symbol: '2303', name: '統一 (Uni-President)', category: 'Stock', riskLevel: 'Low' },
         { id: 'a5', symbol: '2881', name: '國泰金 (Cathay)', category: 'Stock', riskLevel: 'Low' },
-        { id: 'a6', symbol: 'BTC', name: '比特幣 (Bitcoin)', category: 'Crypto', riskLevel: 'High' },
-        { id: 'a7', symbol: 'CASH', name: '現金 (TWD)', category: 'Cash', riskLevel: 'None' },
+        { id: 'a6', symbol: '2382', name: '宏碁 (Acer)', category: 'Stock', riskLevel: 'Medium' },
+        { id: 'a7', symbol: '2409', name: '聯強 (Synnex)', category: 'Stock', riskLevel: 'Medium' },
+        { id: 'a8', symbol: '2376', name: '技嘉 (Gigabyte)', category: 'Stock', riskLevel: 'High' },
+        { id: 'a9', symbol: 'CASH', name: '現金 (TWD)', category: 'Cash', riskLevel: 'None' },
     ],
     holdings: [
         { assetId: 'a1', quantity: 10, avgPrice: 800, currency: 'TWD' },
-        { assetId: 'a7', quantity: 100000, avgPrice: 1, currency: 'TWD' },
+        { assetId: 'a9', quantity: 100000, avgPrice: 1, currency: 'TWD' },
     ],
     transactions: [],
     targets: [
-        { category: 'Stock', targetPercentage: 60 },
-        { category: 'Cash', targetPercentage: 40 },
+        { category: 'Stock', targetPercentage: 80 },
+        { category: 'Cash', targetPercentage: 20 },
     ],
     history: Array.from({ length: 30 }, (_, i) => ({
         date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
