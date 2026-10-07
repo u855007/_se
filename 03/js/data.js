@@ -8,7 +8,7 @@ export const DB = {
         'GOLD': 2350.00,
         'USD': 1.0,
         'TWD': 0.031,
-        'REAL_ESTATE_AVG': 50000 // Unit price per sq ft simulated
+        'REAL_ESTATE_AVG': 50000
     },
     assets: [
         { id: 'a1', symbol: 'BTC', name: 'Bitcoin', category: 'Crypto', riskLevel: 'High' },
@@ -42,13 +42,10 @@ export const DB = {
         { category: 'Cash', targetPercentage: 10 },
         { category: 'Real Estate', targetPercentage: 20 },
     ],
-    history: [
-        // 30 days of simulated portfolio value
-        ...Array.from({ length: 30 }, (_, i) => ({
-            date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            value: 500000 + Math.random() * 20000 - 10000
-        }))
-    ]
+    history: Array.from({ length: 30 }, (_, i) => ({
+        date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        value: 500000 + Math.random() * 20000 - 10000
+    }))
 };
 
 export default DB;

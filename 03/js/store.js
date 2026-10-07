@@ -24,7 +24,7 @@ export const Store = {
             const currentValue = h.quantity * currentPrice;
             const costBasis = h.quantity * h.avgPrice;
             const profitLoss = currentValue - costBasis;
-            const profitPercent = ((currentValue / costBasis) - 1) * 100;
+            const profitPercent = costBasis === 0 ? 0 : ((currentValue / costBasis) - 1) * 100;
 
             return {
                 ...asset,
@@ -54,7 +54,7 @@ export const Store = {
         return Object.entries(allocation).map(([category, value]) => ({
             category,
             value,
-            percentage: (value / total) * 100
+            percentage: total === 0 ? 0 : (value / total) * 100
         }));
     },
 

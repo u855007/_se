@@ -43,10 +43,8 @@ const app = {
                 return;
             }
 
-            // Add to DB holdings
             const existing = DB.holdings.find(h => h.assetId === assetId);
             if (existing) {
-                // Update weighted average price
                 const totalCost = (existing.quantity * existing.avgPrice) + (quantity * avgPrice);
                 existing.quantity += quantity;
                 existing.avgPrice = totalCost / existing.quantity;
@@ -64,29 +62,10 @@ const app = {
         });
     },
 
-    showModal() {
-        const modal = document.getElementById('asset-modal');
-        const select = document.getElementById('asset-select');
-        if (!modal || !select) return;
-
-        // Inject asset options from DB
-        select.innerHTML = DB.assets.map(a => `
-            <option value="${a.id}">${a.symbol} - ${a.name} (${a.category})</option>
-        `).join('');
-
-        modal.classList.remove('hidden');
-    },
-
-    closeModal() {
-        const modal = document.getElementById('asset-modal');
-        if (modal) modal.classList.add('hidden');
-    },
-
     navigate(page) {
         console.log('Navigating to:', page);
         this.currentPage = page;
 
-        // Update Navigation UI state
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.classList.remove('bg-slate-800', 'text-white');
         });
@@ -105,15 +84,12 @@ const app = {
 
         if (!content) return;
 
-        // Clear existing content first to avoid flicker
         content.innerHTML = '';
 
         switch(this.currentPage) {
             case 'dashboard':
                 title.innerText = '投資組合總覽';
                 content.innerHTML = UI.renderDashboard();
-                // Use setTimeout to ensure the DOM is fully updated before drawing charts
-                setTimeout(() => this.initCharts(), 50);
                 break;
             case 'holdings':
                 title.innerText = '資產詳細清單';
@@ -129,60 +105,21 @@ const app = {
         }
     },
 
-    initCharts() {
-        try {
-            // Allocation Chart
-            const ctxAlloc = document.getElementById('allocationChart');
-            if (ctxAlloc) {
-                const allocation = Store.getAllocation();
-                new Chart(ctxAlloc, {
-                    type: 'doughnut',
-                    data: {
-                        labels: allocation.map(a => a.category),
-                        datasets: [{
-                            data: allocation.map(a => a.value),
-                            backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        plugins: { legend: { position: 'bottom' } },
-                        cutout: '70%'
-                    }
-                });
-            }
+    showModal() {
+        const modal = document.getElementById('asset-modal');
+        const select = document.getElementById('asset-select');
+        if (!modal || !select) return;
 
-            // Performance Chart
-            const ctxPerf = document.getElementById('performanceChart');
-            if (ctxPerf) {
-                new Chart(ctxPerf, {
-                    type: 'line',
-                    data: {
-                        labels: DB.history.map(h => h.date),
-                        datasets: [{
-                            label: 'Portfolio Value',
-                            data: DB.history.map(h => h.value),
-                            borderColor: '#4f46e5',
-                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { display: false } },
-                            y: { grid: { color: '#f1f5f9' } }
-                        }
-                    }
-                });
-            }
-        } catch (e) {
-            console.error('Chart initialization failed:', e);
-        }
+        select.innerHTML = DB.assets.map(a => `
+            <option value="${a.id}">${a.symbol} - ${a.name} (${a.category})</option>
+        `).join('');
+
+        modal.classList.remove('hidden');
+    },
+
+    closeModal() {
+        const modal = document.getElementById('asset-modal');
+        if (modal) modal.classList.add('hidden');
     },
 
     updateScenario(category, value) {
