@@ -59,28 +59,5 @@
     </main>
 
     <script type="module" src="js/app.js"></script>
-    <script>
-        // Simple helper to manage nav active state
-        window.app = {
-            navigate: function(page) {
-                // This will be overridden by the real app.js but we need it for the HTML buttons
-                // in case the module hasn't loaded yet.
-            }
-        };
-        // Wait for module load
-        window.addEventListener('load', () => {
-            const updateNav = (page) => {
-                document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('bg-slate-800', 'text-white'));
-                const active = document.getElementById(`nav-${page}`);
-                if (active) active.classList.add('bg-slate-800', 'text-white');
-            };
-            // Patch the real app.navigate
-            const originalNavigate = window.app.navigate;
-            window.app.navigate = function(page) {
-                updateNav(page);
-                originalNavigate(page);
-            };
-        });
-    </script>
 </body>
 </html>

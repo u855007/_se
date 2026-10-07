@@ -12,6 +12,16 @@ const app = {
 
     navigate(page) {
         this.currentPage = page;
+
+        // Update Navigation UI state
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.classList.remove('bg-slate-800', 'text-white');
+        });
+        const activeBtn = document.getElementById(`nav-${page}`);
+        if (activeBtn) {
+            activeBtn.classList.add('bg-slate-800', 'text-white');
+        }
+
         this.render();
     },
 
