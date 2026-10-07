@@ -49,11 +49,15 @@ const app = {
 
         if (!content) return;
 
+        // Clear existing content first to avoid flicker
+        content.innerHTML = '';
+
         switch(this.currentPage) {
             case 'dashboard':
                 title.innerText = '投資組合總覽';
                 content.innerHTML = UI.renderDashboard();
-                this.initCharts();
+                // Use setTimeout to ensure the DOM is fully updated before drawing charts
+                setTimeout(() => this.initCharts(), 50);
                 break;
             case 'holdings':
                 title.innerText = '資產詳細清單';
