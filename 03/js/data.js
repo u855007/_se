@@ -10,6 +10,18 @@ export const DB = {
         'TWD': 0.031,
         'REAL_ESTATE_AVG': 50000
     },
+    // 過去 10 年年化平均報酬率 (CAGR) - 模擬數據
+    historicalReturns: {
+        'BTC': 0.60,    // 60%
+        'ETH': 0.80,    // 80%
+        'AAPL': 0.25,   // 25%
+        'TSLA': 0.40,   // 40%
+        'NVDA': 0.50,   // 50%
+        'GOLD': 0.05,   // 5%
+        'S&P500': 0.12, // 12%
+        'CASH': 0.02,    // 2%
+        'PROP': 0.04     // 4%
+    },
     assets: [
         { id: 'a1', symbol: 'BTC', name: 'Bitcoin', category: 'Crypto', riskLevel: 'High' },
         { id: 'a2', symbol: 'ETH', name: 'Ethereum', category: 'Crypto', riskLevel: 'High' },

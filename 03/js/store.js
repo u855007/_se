@@ -60,5 +60,24 @@ export const Store = {
 
     setScenario(category, value) {
         this.scenarioMultipliers[category] = parseFloat(value);
+    },
+
+    // --- 新增：未來 10 年財富預測邏輯 ---
+    predictFutureValue(years = 10) {
+        const holdings = this.calculateHoldings();
+        let futureTotal = 0;
+
+        holdings.forEach(h => {
+            const annualReturn = DB.historicalReturns[h.symbol] || 0.05; // 預設 5%
+            const currentVal = h.currentValue;
+            // 複利公式: FV = PV * (1 + r)^n
+            futureTotal += currentVal * Math.pow(1 + annualReturn, years);
+        });
+
+        return {
+            currentValue: this.getTotalNetWorth(),
+            futureValue: futureTotal,
+            multiplier: futureTotal / this.getTotalNetWorth()
+        };
     }
 };

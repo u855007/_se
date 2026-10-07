@@ -6,6 +6,7 @@ export const UI = {
         try {
             const totalValue = Store.getTotalNetWorth();
             const allocation = Store.getAllocation();
+            const prediction = Store.predictFutureValue(10);
 
             return `
                 <div class="max-w-6xl mx-auto space-y-8">
@@ -40,6 +41,23 @@ export const UI = {
                             <p class="text-sm text-slate-500 px-4">您的配置傾向於【中高風險】<br>建議增加防禦性資產</p>
                         </div>
                     </div>
+
+                    <!-- 財富預測區塊 -->
+                    <div class="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-3xl shadow-xl text-white relative overflow-hidden">
+                        <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+                            <div class="space-y-2">
+                                <h3 class="text-2xl font-bold">🚀 未來 10 年財富預測</h3>
+                                <p class="text-indigo-100 text-sm opacity-80">基於您目前持有的資產，參考過去 10 年的年化平均報酬率 (CAGR) 進行複利計算</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-indigo-200 text-sm mb-1">預計 2036 年總淨值</p>
+                                <h2 class="text-5xl font-black tracking-tighter">$${prediction.futureValue.toLocaleString(undefined, {maximumFractionDigits: 0})}</h2>
+                                <p class="text-indigo-200 text-xs mt-2 font-medium">預計增長 ${prediction.multiplier.toFixed(1)} 倍</p>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                    </div>
+
                     <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-xl font-bold text-slate-800">資產價值趨勢 (最近 30 日)</h3>
@@ -110,7 +128,7 @@ export const UI = {
                 </div>
             `;
         } catch (e) {
-            return `<div class="p-6 text-red-500">資產清單渲染出錯: ${e.message}</div>`;
+            return `<div class="p-6 text-red-500">資產清單渲染出錯: ${e.message}</div></div>`;
         }
     },
 
