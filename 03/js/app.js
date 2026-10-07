@@ -7,6 +7,7 @@ const app = {
 
     init() {
         this.setupNavigation();
+        this.setupModal();
         this.render();
         window.app = this;
     },
@@ -24,6 +25,61 @@ const app = {
                 btn.addEventListener('click', () => this.navigate(page));
             }
         });
+    },
+
+    setupModal() {
+        const modal = document.getElementById('asset-modal');
+        const form = document.getElementById('asset-form');
+        if (!form) return;
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const assetId = document.getElementById('asset-select').value;
+            const quantity = parseFloat(document.getElementById('asset-qty').value);
+            const avgPrice = parseFloat(document.getElementById('asset-price').value);
+
+            if (!assetId || isNaN(quantity) || isNaN(avgPrice)) {
+                alert('請填寫所有欄位');
+                return;
+            }
+
+            // Add to DB holdings
+            const existing = DB.holdings.find(h => h.assetId === assetId);
+            if (existing) {
+                // Update weighted average price
+                const totalCost = (existing.quantity * existing.avgPrice) + (quantity * avgPrice);
+                existing.quantity += quantity;
+                existing.avgPrice = totalCost / existing.quantity;
+            } else {
+                DB.holdings.push({
+                    assetId,
+                    quantity,
+                    avgPrice,
+                    currency: 'USD'
+                });
+            }
+
+            this.closeModal();
+            this.render();
+        });
+    },
+
+    showModal() {
+        const modal = document.getElementById('asset-modal');
+        const select = document.getElementById('asset-select');
+        if (!modal || !select) return;
+
+        // Inject asset options from DB
+        select.innerHTML = DB.assets.map(a => `
+            <option value="${a.id}">${a.symbol} - ${a.name} (${a.category})</option>
+        `).join('');
+
+        modal.classList.remove('hidden');
+    },
+
+    closeModal() {
+        const modal = document.getElementById('asset-modal');
+        if (modal) modal.classList.add('hidden');
     },
 
     navigate(page) {
