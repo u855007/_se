@@ -12,8 +12,8 @@ export const UI = {
                 <div class="max-w-6xl mx-auto space-y-8">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl border border-slate-800 flex flex-col justify-center">
-                            <p class="text-slate-400 text-sm font-medium mb-2">總資產淨值 (Total Net Worth)</p>
-                            <h2 class="text-5xl font-bold tracking-tight mb-4">$${totalValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</h2>
+                            <p class="text-slate-400 text-sm font-medium mb-2">目前總資產淨值 (TWD)</p>
+                            <h2 class="text-5xl font-bold tracking-tight mb-4">$${totalValue.toLocaleString(undefined, {maximumFractionDigits: 0})}</h2>
                             <div class="flex items-center gap-2 text-green-400 text-sm bg-green-400/10 w-fit px-3 py-1 rounded-full">
                                 <span class="font-bold">▲ +2.4%</span>
                                 <span class="text-green-200/70">過去 24 小時</span>
@@ -42,12 +42,11 @@ export const UI = {
                         </div>
                     </div>
 
-                    <!-- 財富預測區塊 -->
                     <div class="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-3xl shadow-xl text-white relative overflow-hidden">
                         <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
                             <div class="space-y-2">
                                 <h3 class="text-2xl font-bold">🚀 未來 10 年財富預測</h3>
-                                <p class="text-indigo-100 text-sm opacity-80">基於您目前持有的資產，參考過去 10 年的年化平均報酬率 (CAGR) 進行複利計算</p>
+                                <p class="text-indigo-100 text-sm opacity-80">基於您目前的台股/加密貨幣持倉，參考過去 10 年年化報酬率 (CAGR) 進行複利計算</p>
                             </div>
                             <div class="text-right">
                                 <p class="text-indigo-200 text-sm mb-1">預計 2036 年總淨值</p>
@@ -128,7 +127,7 @@ export const UI = {
                 </div>
             `;
         } catch (e) {
-            return `<div class="p-6 text-red-500">資產清單渲染出錯: ${e.message}</div></div>`;
+            return `<div class="p-6 text-red-500">資產清單渲染出錯: ${e.message}</div>`;
         }
     },
 
