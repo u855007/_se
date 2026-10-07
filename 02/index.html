@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校務系統 - 模擬專案</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Login Overlay -->
+    <div id="login-page" class="fixed inset-0 bg-blue-900 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">NQU</div>
+                <h1 class="text-2xl font-bold text-gray-800">校務系統登入</h1>
+                <p class="text-gray-500 text-sm">請輸入您的帳號密碼以進入系統</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">帳號</label>
+                    <input type="text" id="username" class="w-full p-3 border rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="例如: student1" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">密碼</label>
+                    <input type="password" id="password" class="w-full p-3 border rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg">登入系統</button>
+            </form>
+            <div class="mt-6 text-center text-xs text-gray-400">
+                <p>測試帳號: student1 / faculty1 / admin1</p>
+                <p>密碼: password123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Shell (Hidden by default) -->
+    <div id="app-shell" class="hidden flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-800 text-white flex flex-col shrink-0">
+            <div class="p-6 text-center border-b border-slate-700">
+                <div class="text-xl font-bold tracking-wider">校務系統</div>
+                <div id="user-role-badge" class="text-xs bg-blue-500 px-2 py-1 rounded mt-2 inline-block uppercase">Student</div>
+            </div>
+
+            <nav id="main-nav" class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <!-- Nav items injected by JS -->
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <button id="logout-btn" class="w-full flex items-center justify-center gap-2 p-3 rounded-lg hover:bg-slate-700 transition text-sm font-medium text-gray-300">
+                    <span>登出系統</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <header class="h-16 bg-white border-b flex items-center justify-between px-6 shrink-0">
+                <div id="page-title" class="text-lg font-bold text-gray-700">歡迎</div>
+                <div class="flex items-center gap-4">
+                    <span id="user-display-name" class="text-sm text-gray-600">使用者</span>
+                    <div class="w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="avatar">
+                    </div>
+                </div>
+            </header>
+
+            <div id="content-area" class="flex-1 overflow-y-auto bg-gray-50">
+                <!-- Content injected by JS -->
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
