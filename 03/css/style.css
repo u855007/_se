@@ -1,0 +1,43 @@
+/* Professional Fintech Theme */
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --success: #10b981;
+    --danger: #ef4444;
+    --slate-50: #f8fafc;
+    --slate-900: #0f172a;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+.nav-item {
+    @apply flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white text-sm font-medium;
+}
+
+.nav-item.active {
+    @apply bg-slate-800 text-white shadow-inner;
+}
+
+/* Custom scrollbar for a clean look */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+canvas {
+    max-width: 100% !important;
+}
