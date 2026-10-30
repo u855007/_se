@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker 微服務計數器</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        h1 { color: #333; }
+        #count { font-size: 3rem; font-weight: bold; color: #007bff; margin: 1rem 0; }
+        .info { color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>歡迎來到 Docker 系統</h1>
+        <p>目前訪問次數：</p>
+        <div id="count">Loading...</div>
+        <p class="info">這個頁面由 Nginx $\to$ Node.js $\to$ PostgreSQL 驅動</p>
+    </div>
+
+    <script>
+        async function updateCount() {
+            try {
+                const response = await fetch('/api/count');
+                const data = await response.json();
+                document.getElementById('count').innerText = data.count;
+            } catch (err) {
+                document.getElementById('count').innerText = 'Error!';
+                console.error(err);
+            }
+        }
+        updateCount();
+    </script>
+</body>
+</html>
