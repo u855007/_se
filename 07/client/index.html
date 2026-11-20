@@ -2,24 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web API Tester</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e2e; color: #cdd6f4; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: #313244; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: #89b4fa; margin-bottom: 30px; }
+        .control-panel { display: flex; gap: 15px; margin-bottom: 20px; }
+        select { padding: 12px; background: #45475a; color: white; border: 1px solid #585b70; border-radius: 6px; cursor: pointer; }
+        input { flex: 1; padding: 12px; background: #45475a; color: white; border: 1px solid #585b70; border-radius: 6px; font-size: 16px; }
+        button { padding: 12px 25px; background: #89b4fa; color: #1e1e2e; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #b4befe; transform: translateY(-2px); }
+        .response-area { background: #181825; padding: 20px; border-radius: 8px; border: 1px solid #45475a; min-height: 200px; white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; overflow-x: auto; }
+        .status-bar { margin-bottom: 10px; font-weight: bold; color: #a6adc8; }
+        .status-ok { color: #a6e3a1; }
+        .status-error { color: #f38ba8; }
+    </style>
 </head>
 <body>
-    <h1 id="title">Welcome</h1>
-    <input type="text" id="input" placeholder="Type something...">
-    <button id="sendBtn">Send</button>
-    <p id="response"></p>
+    <div class="container">
+        <h1>🌐 Web API Tester</h1>
+        <div class="control-panel">
+            <select id="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+            </select>
+            <input type="text" id="urlInput" placeholder="Enter API URL (e.g., https://jsonplaceholder.typicode.com/todos/1)">
+            <button id="sendBtn">Send Request</button>
+        </div>
+        <div class="status-bar" id="statusBar">Status: Ready</div>
+        <div class="response-area" id="responseArea">Response will appear here...</div>
+    </div>
 
     <script>
+        const PROXY_URL = 'http://127.0.0.1:8080/proxy';
+
         document.getElementById('sendBtn').onclick = async () => {
-            const text = document.getElementById('input').value;
-            const res = await fetch('http://127.0.0.1:8080/echo', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text })
-            });
-            const data = await res.json();
-            document.getElementById('response').innerText = data.text;
+            const url = document.getElementById('urlInput').value;
+            const method = document.getElementById('method').value;
+            const responseArea = document.getElementById('responseArea');
+            const statusBar = document.getElementById('statusBar');
+
+            if (!url) return alert('Please enter a URL');
+
+            statusBar.innerText = 'Status: Sending...';
+            responseArea.innerText = 'Loading...';
+
+            try {
+                const res = await fetch(PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, method })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    statusBar.innerHTML = `Status: <span class="status-ok">${data.status} OK</span>`;
+                    responseArea.innerText = data.body;
+                } else {
+                    const err = await res.text();
+                    statusBar.innerHTML = `Status: <span class="status-error">Error</span>`;
+                    responseArea.innerText = 'Proxy Error: ' + err;
+                }
+            } catch (e) {
+                statusBar.innerHTML = `Status: <span class="status-error">Connection Failed</span>`;
+                responseArea.innerText = 'Could not connect to proxy server: ' + e.message;
+            }
         };
     </script>
 </body>
