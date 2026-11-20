@@ -1,0 +1,15 @@
+{
+  "name": "@peter-dev/edge-study-notes",
+  "version": "1.0.0",
+  "exports": "./mod.ts",
+  "publish": {
+    "include": [
+      "mod.ts",
+      "public/**",
+      "README.md",
+      "jsr.json",
+      "LICENSE"
+    ]
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "edge-study-notes",
+  "version": "1.0.0",
+  "description": "繁體中文學習日誌，在本機新增、搜尋並整理開發筆記。",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "edge-study-notes": "bin/edge-study-notes.js"
+  },
+  "files": [
+    "bin/",
+    "public/",
+    "wrangler.jsonc"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "notes",
+    "study",
+    "cloudflare",
+    "zh-tw"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
